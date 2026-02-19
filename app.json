@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Sağlık & Fitness Takip",
+    "slug": "saglik-fitness-takip",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#E63946"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.saglikfitness.app"
+    },
+    "android": {
+      "package": "com.saglikfitness.app"
+    },
+    "plugins": [
+      "expo-asset",
+      "expo-font"
+    ]
+  }
+}

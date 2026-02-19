@@ -1,0 +1,73 @@
+export const foodDatabase = [
+  // Kahvaltılık
+  { id: 1, name: 'Bal', calories: 307, protein: 0.3, carbs: 82, fat: 0, unit: 'gram', amount: 100 },
+  { id: 2, name: 'Beyaz Peynir', calories: 275, protein: 18, carbs: 1.5, fat: 22, unit: 'gram', amount: 100 },
+  { id: 3, name: 'Kaymak', calories: 624, protein: 2.2, carbs: 2.5, fat: 68, unit: 'gram', amount: 100 },
+  { id: 4, name: 'Kaşar Peyniri', calories: 413, protein: 25, carbs: 1.3, fat: 34, unit: 'gram', amount: 100 },
+  { id: 5, name: 'Marmelat', calories: 280, protein: 0.4, carbs: 70, fat: 0, unit: 'gram', amount: 100 },
+  { id: 6, name: 'Müsli', calories: 30, protein: 1, carbs: 6, fat: 0.5, unit: 'yemek kaşığı', amount: 1 },
+  { id: 7, name: 'Pastırma', calories: 250, protein: 24, carbs: 0, fat: 17, unit: 'gram', amount: 100 },
+  { id: 8, name: 'Sucuk', calories: 473, protein: 22, carbs: 1, fat: 42, unit: 'gram', amount: 100 },
+  { id: 9, name: 'Zeytin (Siyah)', calories: 115, protein: 0.8, carbs: 6, fat: 11, unit: 'gram', amount: 100 },
+  { id: 10, name: 'Yumurta (Haşlanmış)', calories: 155, protein: 13, carbs: 1, fat: 11, unit: 'adet', amount: 1 },
+  { id: 11, name: 'Menemen (1 Porsiyon)', calories: 220, protein: 12, carbs: 8, fat: 16, unit: 'porsiyon', amount: 1 },
+  { id: 12, name: 'Börek (Peynirli)', calories: 290, protein: 9, carbs: 28, fat: 16, unit: 'dilim', amount: 1 },
+  { id: 13, name: 'Simit', calories: 280, protein: 9, carbs: 48, fat: 5, unit: 'adet', amount: 1 },
+  { id: 14, name: 'Poğaça', calories: 310, protein: 7, carbs: 42, fat: 13, unit: 'adet', amount: 1 },
+
+  // Ana Yemekler
+  { id: 15, name: 'Kuru Fasulye', calories: 180, protein: 8, carbs: 28, fat: 4, unit: 'porsiyon', amount: 1 },
+  { id: 16, name: 'Mercimek Çorbası', calories: 140, protein: 7, carbs: 24, fat: 2, unit: 'kase', amount: 1 },
+  { id: 17, name: 'İskender Kebap', calories: 580, protein: 32, carbs: 45, fat: 28, unit: 'porsiyon', amount: 1 },
+  { id: 18, name: 'Adana Kebap', calories: 320, protein: 24, carbs: 2, fat: 24, unit: 'porsiyon', amount: 1 },
+  { id: 19, name: 'Köfte', calories: 280, protein: 18, carbs: 8, fat: 20, unit: 'porsiyon', amount: 1 },
+  { id: 20, name: 'Mantı', calories: 350, protein: 14, carbs: 48, fat: 12, unit: 'porsiyon', amount: 1 },
+  { id: 21, name: 'Dolma (Zeytinyağlı)', calories: 85, protein: 2, carbs: 12, fat: 3, unit: 'adet', amount: 1 },
+  { id: 22, name: 'Sarma (Yaprak)', calories: 75, protein: 2, carbs: 10, fat: 3, unit: 'adet', amount: 1 },
+  { id: 23, name: 'İmam Bayıldı', calories: 180, protein: 3, carbs: 20, fat: 10, unit: 'porsiyon', amount: 1 },
+  { id: 24, name: 'Karnıyarık', calories: 290, protein: 12, carbs: 25, fat: 16, unit: 'porsiyon', amount: 1 },
+  { id: 25, name: 'Pilav (Pirinç)', calories: 206, protein: 4, carbs: 45, fat: 1, unit: 'porsiyon', amount: 1 },
+  { id: 26, name: 'Bulgur Pilavı', calories: 190, protein: 6, carbs: 40, fat: 1, unit: 'porsiyon', amount: 1 },
+  { id: 27, name: 'Tavuk Göğsü (Izgara)', calories: 165, protein: 31, carbs: 0, fat: 3.6, unit: 'gram', amount: 100 },
+  { id: 28, name: 'Balık (Levrek)', calories: 97, protein: 18, carbs: 0, fat: 2.5, unit: 'gram', amount: 100 },
+  { id: 29, name: 'Lahmacun', calories: 260, protein: 11, carbs: 32, fat: 10, unit: 'adet', amount: 1 },
+  { id: 30, name: 'Pide (Kıymalı)', calories: 380, protein: 16, carbs: 48, fat: 14, unit: 'porsiyon', amount: 1 },
+
+  // Sebzeler ve Salatalar
+  { id: 31, name: 'Çoban Salata', calories: 65, protein: 2, carbs: 10, fat: 2, unit: 'porsiyon', amount: 1 },
+  { id: 32, name: 'Mevsim Salata', calories: 55, protein: 2, carbs: 8, fat: 2, unit: 'porsiyon', amount: 1 },
+  { id: 33, name: 'Cacık', calories: 45, protein: 3, carbs: 4, fat: 2, unit: 'kase', amount: 1 },
+  { id: 34, name: 'Haydari', calories: 85, protein: 4, carbs: 5, fat: 5, unit: 'porsiyon', amount: 1 },
+  { id: 35, name: 'Patlıcan Salatası', calories: 120, protein: 2, carbs: 12, fat: 7, unit: 'porsiyon', amount: 1 },
+  { id: 36, name: 'Közlenmiş Biber', calories: 90, protein: 2, carbs: 10, fat: 5, unit: 'porsiyon', amount: 1 },
+
+  // Tatlılar
+  { id: 37, name: 'Baklava', calories: 430, protein: 7, carbs: 51, fat: 23, unit: 'dilim', amount: 1 },
+  { id: 38, name: 'Kadayıf', calories: 380, protein: 6, carbs: 48, fat: 19, unit: 'porsiyon', amount: 1 },
+  { id: 39, name: 'Revani', calories: 320, protein: 5, carbs: 52, fat: 11, unit: 'dilim', amount: 1 },
+  { id: 40, name: 'Sütlaç', calories: 180, protein: 5, carbs: 32, fat: 4, unit: 'kase', amount: 1 },
+  { id: 41, name: 'Kazandibi', calories: 240, protein: 6, carbs: 36, fat: 8, unit: 'porsiyon', amount: 1 },
+  { id: 42, name: 'Tulumba Tatlısı', calories: 290, protein: 3, carbs: 46, fat: 11, unit: 'porsiyon', amount: 1 },
+  { id: 43, name: 'Lokum', calories: 320, protein: 0, carbs: 80, fat: 0, unit: 'gram', amount: 100 },
+
+  // İçecekler
+  { id: 44, name: 'Ayran', calories: 50, protein: 2, carbs: 4, fat: 2, unit: 'bardak', amount: 1 },
+  { id: 45, name: 'Şalgam Suyu', calories: 15, protein: 0.5, carbs: 3, fat: 0, unit: 'bardak', amount: 1 },
+  { id: 46, name: 'Türk Kahvesi (Şekerli)', calories: 60, protein: 0.3, carbs: 14, fat: 0.2, unit: 'fincan', amount: 1 },
+  { id: 47, name: 'Çay (Şekersiz)', calories: 2, protein: 0, carbs: 0.5, fat: 0, unit: 'bardak', amount: 1 },
+  { id: 48, name: 'Çay (2 Şekerli)', calories: 40, protein: 0, carbs: 10, fat: 0, unit: 'bardak', amount: 1 },
+  { id: 49, name: 'Boza', calories: 90, protein: 1.5, carbs: 19, fat: 0.5, unit: 'bardak', amount: 1 },
+  { id: 50, name: 'Salep', calories: 140, protein: 3, carbs: 28, fat: 2, unit: 'bardak', amount: 1 },
+
+  // Ara Öğünler ve Atıştırmalıklar
+  { id: 51, name: 'Fındık', calories: 628, protein: 15, carbs: 17, fat: 61, unit: 'gram', amount: 100 },
+  { id: 52, name: 'Ceviz', calories: 654, protein: 15, carbs: 14, fat: 65, unit: 'gram', amount: 100 },
+  { id: 53, name: 'Badem', calories: 579, protein: 21, carbs: 22, fat: 50, unit: 'gram', amount: 100 },
+  { id: 54, name: 'Çekirdek (Ayçekirdeği)', calories: 584, protein: 21, carbs: 20, fat: 52, unit: 'gram', amount: 100 },
+  { id: 55, name: 'Elma', calories: 52, protein: 0.3, carbs: 14, fat: 0.2, unit: 'adet', amount: 1 },
+  { id: 56, name: 'Portakal', calories: 62, protein: 1.2, carbs: 15, fat: 0.2, unit: 'adet', amount: 1 },
+  { id: 57, name: 'Muz', calories: 105, protein: 1.3, carbs: 27, fat: 0.4, unit: 'adet', amount: 1 },
+  { id: 58, name: 'Üzüm', calories: 69, protein: 0.7, carbs: 18, fat: 0.2, unit: 'gram', amount: 100 },
+  { id: 59, name: 'Kuru Üzüm', calories: 299, protein: 3, carbs: 79, fat: 0.5, unit: 'gram', amount: 100 },
+  { id: 60, name: 'Kuru Kayısı', calories: 241, protein: 3.4, carbs: 63, fat: 0.5, unit: 'gram', amount: 100 },
+];
