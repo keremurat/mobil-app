@@ -14,7 +14,7 @@ import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { foodDatabase } from '../data/foodDatabase';
-import { getDailyLog, saveDailyLog, getDateString } from '../utils/storage';
+import { getDailyLog, saveDailyLog, getDateString, saveRecentMeal } from '../utils/storage';
 
 const AddMealScreen = ({ route, navigation }) => {
   const { mealType } = route.params;
@@ -93,6 +93,7 @@ const AddMealScreen = ({ route, navigation }) => {
 
       dailyLog.meals.push(mealData);
       await saveDailyLog(today, dailyLog);
+      await saveRecentMeal(mealData);
 
       Alert.alert('Başarılı', 'Yemek eklendi!', [
         { text: 'Tamam', onPress: () => navigation.goBack() },

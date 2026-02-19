@@ -12,7 +12,17 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../constants/colors';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { getUserProfile, getDailyLog, getDateString, getWeekDates } from '../utils/storage';
+import { ProgressRing } from '../components/ProgressRing';
+import { calculateMacros } from '../utils/calculations';
+import {
+  getUserProfile,
+  getDailyLog,
+  getDateString,
+  getWeekDates,
+  saveDailyLog,
+  getRecentMeals,
+  saveRecentMeal,
+} from '../utils/storage';
 
 const CalorieTrackerScreen = ({ navigation }) => {
   const [profile, setProfile] = useState(null);
@@ -20,6 +30,8 @@ const CalorieTrackerScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [weekData, setWeekData] = useState([]);
   const [selectedMealType, setSelectedMealType] = useState('Kahvaltı');
+  const [recentMeals, setRecentMeals] = useState([]);
+  const [quickAdding, setQuickAdding] = useState(false);
 
   const loadData = async () => {
     const userProfile = await getUserProfile();
@@ -36,6 +48,9 @@ const CalorieTrackerScreen = ({ navigation }) => {
       log.meals.reduce((sum, meal) => sum + meal.calories, 0)
     );
     setWeekData(weekCalories);
+
+    const recent = await getRecentMeals();
+    setRecentMeals(recent);
   };
 
   useFocusEffect(
@@ -58,6 +73,27 @@ const CalorieTrackerScreen = ({ navigation }) => {
     return getMealsByType(mealType).reduce((sum, meal) => sum + meal.calories, 0);
   };
 
+  const handleQuickAddMeal = async (mealTemplate) => {
+    setQuickAdding(true);
+    try {
+      const today = getDateString();
+      const log = await getDailyLog(today);
+      const quickMeal = {
+        ...mealTemplate,
+        id: Date.now(),
+        mealType: selectedMealType,
+        time: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
+      };
+
+      log.meals.push(quickMeal);
+      await saveDailyLog(today, log);
+      await saveRecentMeal(quickMeal);
+      await loadData();
+    } finally {
+      setQuickAdding(false);
+    }
+  };
+
   const totalCalories = dailyLog?.meals.reduce((sum, meal) => sum + meal.calories, 0) || 0;
   const totalProtein = dailyLog?.meals.reduce((sum, meal) => sum + meal.protein, 0) || 0;
   const totalCarbs = dailyLog?.meals.reduce((sum, meal) => sum + meal.carbs, 0) || 0;
@@ -65,6 +101,35 @@ const CalorieTrackerScreen = ({ navigation }) => {
 
   const calorieGoal = profile?.dailyCalorieGoal || 2000;
   const remaining = calorieGoal - totalCalories;
+  const macroTargets = calculateMacros(calorieGoal);
+  const macroRatios = [
+    {
+      actual: totalProtein,
+      target: macroTargets.protein,
+    },
+    {
+      actual: totalCarbs,
+      target: macroTargets.carbs,
+    },
+    {
+      actual: totalFat,
+      target: macroTargets.fat,
+    },
+  ];
+  const macroBalanceScore = Math.round(
+    macroRatios.reduce((sum, ratio) => {
+      if (!ratio.target) return sum;
+      const diffPercent = Math.abs(ratio.actual - ratio.target) / ratio.target;
+      const score = Math.max(0, 100 - diffPercent * 100);
+      return sum + score;
+    }, 0) / macroRatios.length
+  );
+  const macroBalanceText =
+    macroBalanceScore >= 85
+      ? 'Makro dengen çok iyi, aynı şekilde devam et.'
+      : macroBalanceScore >= 65
+        ? 'Makro dengen fena değil, küçük ayarlamalarla optimize edebilirsin.'
+        : 'Makro dağılımını dengelemek için öğünlerinde protein/karbonhidrat/yağ oranını düzenleyebilirsin.';
 
   const mealTypes = [
     { key: 'Kahvaltı', icon: 'sunny', color: COLORS.warning },
@@ -133,19 +198,66 @@ const CalorieTrackerScreen = ({ navigation }) => {
 
       <Card>
         <Text style={styles.sectionTitle}>Makro Besinler</Text>
-        <View style={styles.macroContainer}>
-          <View style={styles.macroItem}>
-            <Text style={styles.macroLabel}>Protein</Text>
-            <Text style={styles.macroValue}>{totalProtein.toFixed(0)}g</Text>
+        <View style={styles.macroRingRow}>
+          <View style={styles.macroRingItem}>
+            <ProgressRing
+              progress={macroTargets.protein > 0 ? totalProtein / macroTargets.protein : 0}
+              size={82}
+              strokeWidth={7}
+              color={COLORS.primary}
+              value={`${Math.min(Math.round((totalProtein / macroTargets.protein) * 100), 100)}%`}
+              label="Protein"
+            />
+            <Text style={styles.macroTargetText}>{totalProtein.toFixed(0)}g / {macroTargets.protein}g</Text>
           </View>
-          <View style={styles.macroItem}>
-            <Text style={styles.macroLabel}>Karbonhidrat</Text>
-            <Text style={styles.macroValue}>{totalCarbs.toFixed(0)}g</Text>
+
+          <View style={styles.macroRingItem}>
+            <ProgressRing
+              progress={macroTargets.carbs > 0 ? totalCarbs / macroTargets.carbs : 0}
+              size={82}
+              strokeWidth={7}
+              color={COLORS.info}
+              value={`${Math.min(Math.round((totalCarbs / macroTargets.carbs) * 100), 100)}%`}
+              label="Karb"
+            />
+            <Text style={styles.macroTargetText}>{totalCarbs.toFixed(0)}g / {macroTargets.carbs}g</Text>
           </View>
-          <View style={styles.macroItem}>
-            <Text style={styles.macroLabel}>Yağ</Text>
-            <Text style={styles.macroValue}>{totalFat.toFixed(0)}g</Text>
+
+          <View style={styles.macroRingItem}>
+            <ProgressRing
+              progress={macroTargets.fat > 0 ? totalFat / macroTargets.fat : 0}
+              size={82}
+              strokeWidth={7}
+              color={COLORS.warning}
+              value={`${Math.min(Math.round((totalFat / macroTargets.fat) * 100), 100)}%`}
+              label="Yağ"
+            />
+            <Text style={styles.macroTargetText}>{totalFat.toFixed(0)}g / {macroTargets.fat}g</Text>
           </View>
+        </View>
+
+        <View style={styles.macroScoreContainer}>
+          <View style={styles.macroScoreHeader}>
+            <Text style={styles.macroScoreLabel}>Makro Denge Skoru</Text>
+            <Text style={styles.macroScoreValue}>{macroBalanceScore}/100</Text>
+          </View>
+          <View style={styles.macroScoreTrack}>
+            <View
+              style={[
+                styles.macroScoreFill,
+                {
+                  width: `${macroBalanceScore}%`,
+                  backgroundColor:
+                    macroBalanceScore >= 85
+                      ? COLORS.success
+                      : macroBalanceScore >= 65
+                        ? COLORS.warning
+                        : COLORS.danger,
+                },
+              ]}
+            />
+          </View>
+          <Text style={styles.macroScoreHint}>{macroBalanceText}</Text>
         </View>
       </Card>
 
@@ -235,6 +347,27 @@ const CalorieTrackerScreen = ({ navigation }) => {
           ))
         ) : (
           <Text style={styles.emptyMeal}>Bu öğün için henüz yemek eklenmedi</Text>
+        )}
+
+        {recentMeals.length > 0 && (
+          <View style={styles.quickAddSection}>
+            <Text style={styles.quickAddTitle}>Son Eklenenler (Hızlı Ekle)</Text>
+            <View style={styles.quickAddList}>
+              {recentMeals.slice(0, 4).map((meal, index) => (
+                <TouchableOpacity
+                  key={`${meal.name}-${index}`}
+                  style={styles.quickAddChip}
+                  onPress={() => handleQuickAddMeal(meal)}
+                  disabled={quickAdding}
+                >
+                  <Ionicons name="flash" size={14} color={COLORS.primary} />
+                  <Text style={styles.quickAddChipText} numberOfLines={1}>
+                    {meal.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
         )}
 
         <Button
@@ -340,6 +473,60 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: COLORS.text,
+  },
+  macroRingRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  macroRingItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  macroTargetText: {
+    marginTop: 8,
+    fontSize: 11,
+    color: COLORS.textLight,
+    textAlign: 'center',
+  },
+  macroScoreContainer: {
+    marginTop: 14,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.lightGray,
+  },
+  macroScoreHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  macroScoreLabel: {
+    fontSize: 13,
+    color: COLORS.textSecondary,
+    fontWeight: '600',
+  },
+  macroScoreValue: {
+    fontSize: 14,
+    color: COLORS.text,
+    fontWeight: '800',
+  },
+  macroScoreTrack: {
+    width: '100%',
+    height: 9,
+    borderRadius: 6,
+    overflow: 'hidden',
+    backgroundColor: COLORS.cardSecondary,
+  },
+  macroScoreFill: {
+    height: '100%',
+    borderRadius: 6,
+  },
+  macroScoreHint: {
+    marginTop: 8,
+    fontSize: 12,
+    lineHeight: 18,
+    color: COLORS.textLight,
   },
   chart: {
     flexDirection: 'row',
@@ -477,6 +664,39 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
     paddingVertical: 12,
+  },
+  quickAddSection: {
+    marginTop: 16,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.lightGray,
+  },
+  quickAddTitle: {
+    fontSize: 13,
+    color: COLORS.textLight,
+    marginBottom: 10,
+  },
+  quickAddList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  quickAddChip: {
+    maxWidth: '48%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: COLORS.lightGray,
+    backgroundColor: COLORS.cardSecondary,
+  },
+  quickAddChipText: {
+    marginLeft: 6,
+    fontSize: 13,
+    color: COLORS.textSecondary,
+    flexShrink: 1,
   },
 });
 
